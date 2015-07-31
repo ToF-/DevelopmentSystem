@@ -18,3 +18,5 @@ output :: Stock -> Quantity -> Stock
 output (Stock i q o) l = Stock i q' (q-q')
     where q' = max (q-l) 0
 
+throughput :: Stock -> (Stock -> Quantity) -> Stock
+throughput s f = output s (f s) 

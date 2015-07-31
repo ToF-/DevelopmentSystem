@@ -39,6 +39,23 @@ main = hspec $ do
                 let m = output (input initial 0.6) 1.0
                 output_flow m `shouldBe` 0.6
 
+    describe "a throughput" $ do
+        describe "does output to a stock" $ do
+            it "according to a function of the stock" $ do
+                let s = input initial 4.0
+                    tenpercent stock = (quantity stock) * 0.25
+                    s'= throughput s tenpercent
+                output_flow s' `shouldBe` 1.0
+
+                let s = input initial 4.0
+                    s'= throughput s (const 1.0)
+                quantity s' `shouldBe` 3.0
+                
+                
+                
+                
+    
+
                 
 
             
