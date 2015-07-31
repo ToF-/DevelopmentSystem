@@ -1,0 +1,1 @@
+codingTaskStock n = codingTaskStock (n-1) + codingTaskInput - codingTaskOutput
