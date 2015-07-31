@@ -51,7 +51,17 @@ main = hspec $ do
                     s'= throughput s (const 1.0)
                 quantity s' `shouldBe` 3.0
                 
-                
+    describe "a merge" $ do
+        describe "has a quantity that" $ do
+            it "is the sum of its stocks quantities" $ do
+                let m = Merge (output (input initial 2.3) 0.7) (output (input initial 3.5) 2.1)
+                quantity m `shouldBe` 3.0                 
+                input_flow m `shouldBe` 5.8
+                output_flow m `shouldBe` 2.8
+
+
+            
+
                 
                 
     
