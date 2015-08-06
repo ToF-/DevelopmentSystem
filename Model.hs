@@ -1,29 +1,23 @@
 module Model
 where
 
-type Model = ([Limit],Value,Value,Value)
-
-type Limit = (Label, Value)
-type Label = String
+data Model = Model { featureRequests   :: Value,
+                     codingTasks       :: Value,
+                     deliveredFeatures :: Value,
+                     teamCapacity      :: Value }
 type Value = Double
 
+setTeamCapacity :: Model -> Value -> Model
+setTeamCapacity m n = m { teamCapacity = n }
+
 initial :: Model
-initial = ([], 0.0, 0.0, 0.0)
+initial = Model 0.0 0.0 0.0 0.0
 
-addLimit :: Limit -> Model -> Model
-addLimit l (ls,i,q,o) = (l:ls,i,q,o)
-
-inputValue :: Model -> Value
-inputValue (_,i,_,_) = i
-
-outputValue :: Model -> Value
-outputValue (_,_,_,o) = o
-
-quantity :: Model -> Value
-quantity (_,_,q,_) = q
-
-input :: Value -> Model -> Model 
-input n (ls,_,q,o) = (ls,n,q+n,o)
+input :: Model -> Value -> Model
+input m n = m { featureRequests = n, codingTasks = (codingTasks m) + n }
 
 output :: Model -> Model
-output (ls,i,q,o) = (ls, i, q, o)
+output m = let out = min (teamCapacity m) (codingTasks m)
+        in m { codingTasks = (codingTasks m) - out, deliveredFeatures = out }
+
+
