@@ -1,33 +1,29 @@
 module Model
 where
 
-data Stock = Stock Quantity Quantity Quantity
-           | Merge Stock Stock
-    deriving (Eq,Show)
+type Model = ([Limit],Value,Value,Value)
 
-type Quantity = Double
+type Limit = (Label, Value)
+type Label = String
+type Value = Double
 
-quantity :: Stock -> Quantity
-quantity (Stock _ q _) = q
-quantity (Merge s s')  = quantity s + quantity s' 
+initial :: Model
+initial = ([], 0.0, 0.0, 0.0)
 
-input_flow :: Stock -> Quantity
-input_flow (Stock i _ _) = i
-input_flow (Merge s s') = input_flow s + input_flow s'
+addLimit :: Limit -> Model -> Model
+addLimit l (ls,i,q,o) = (l:ls,i,q,o)
 
-output_flow :: Stock -> Quantity
-output_flow (Stock _ _ o) = o
-output_flow (Merge s s') = output_flow s + output_flow s'
+inputValue :: Model -> Value
+inputValue (_,i,_,_) = i
 
-initial :: Stock
-initial = Stock 0 0 0
+outputValue :: Model -> Value
+outputValue (_,_,_,o) = o
 
-input :: Stock -> Quantity -> Stock
-input (Stock i q o) n = Stock n (q+n) o
+quantity :: Model -> Value
+quantity (_,_,q,_) = q
 
-output :: Stock -> Quantity -> Stock
-output (Stock i q o) l = Stock i q' (q-q')
-    where q' = max (q-l) 0
+input :: Value -> Model -> Model 
+input n (ls,_,q,o) = (ls,n,q+n,o)
 
-throughput :: Stock -> (Stock -> Quantity) -> Stock
-throughput s f = output s (f s) 
+output :: Model -> Model
+output (ls,i,q,o) = (ls, i, q, o)
