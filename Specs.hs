@@ -38,16 +38,23 @@ main = hspec $ do
         let w = Stock "WATER" 5.0 1.0 0.8
 
         it "updates a stock quantity and output values" $ do
-            let w' = runOutput f w
+            let w'  = runOutput f w
                 f s = quantity s * 0.1
             quantity w' `shouldBe` 4.5    
             output w'   `shouldBe` 0.5
 
-        it "can update a stock output with othe parameters" $ do    
-            let w' = runOutput (f 0.2) w
-                f limit s = min limit (quantity s * 0.1)
+        it "can update a stock output with parameters" $ do    
+            let w' = runOutput (capped 0.2) w
+                capped l s = min l (quantity s * 0.1)
             quantity w' `shouldBe` 4.8
             output w'   `shouldBe` 0.2
+
+        it "can update a stock quantity and input value" $ do
+            let w'  = runInput f w
+                f s = 2.0
+            quantity w' `shouldBe` 7.0
+            input    w' `shouldBe` 2.0
+
             
 
 

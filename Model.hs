@@ -33,3 +33,8 @@ runOutput :: (Stock -> Quantity) -> Stock -> Stock
 runOutput f s = s { quantity = q, output = o}
     where o = f s
           q = quantity s - o
+
+runInput :: (Stock -> Quantity) -> Stock -> Stock
+runInput f s = s { quantity = q, input = i}
+    where i = f s
+          q = quantity s + i
