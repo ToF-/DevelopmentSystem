@@ -2,22 +2,32 @@ import Test.Hspec
 import Model
 
 main = hspec $ do
-    describe "a very simple development system" $ do
-        it "should output its stock limited by capacity" $ do
-            let m   = setTeamCapacity initial 1.0
-                m'  = input m 5.0
-                m'' = output m'        
+    describe "a Model" $ do
+        it "is a collection of stocks" $ do
+            let m = addStock "COAL" 3.7 (addStock "WATER" 5.2 initial)
+                s1 = m `stock` "WATER"
+                s2 = m `stock` "COAL"
 
-            featureRequests m''   `shouldBe` 5.0
-            deliveredFeatures m'' `shouldBe` 1.0
-            codingTasks m''       `shouldBe` 4.0
-            
-        it "should output 0 if stock is 0" $ do
-            let m   = setTeamCapacity initial 1.0
-                m'  = input m 0.0
-                m'' = output m'        
+            quantity s1 `shouldBe` 5.2
+            quantity s2 `shouldBe` 3.7
 
-            featureRequests m''   `shouldBe` 0.0
-            deliveredFeatures m'' `shouldBe` 0.0
-            codingTasks m''       `shouldBe` 0.0
+        it "can update a stock" $ do
+            let m = update "WATER" updater (addStock "WATER" 5.2 initial)
+                updater = const 4.5
+            quantity (m `stock` "WATER") `shouldBe` 4.5
+
+        it "can increase a stock" $ do
+            let m = increase "WATER" increaser (addStock "WATER" 5.2 initial)
+                increaser = const 1.5
+            quantity (m `stock` "WATER") `shouldBe` 6.7
+
+
+        it "can decrease a stock" $ do
+            let m = decrease "WATER" decreaser (addStock "WATER" 5.0 initial)
+                decreaser m = (quantity (m `stock` "WATER")) * 0.1
+            quantity (m `stock` "WATER") `shouldBe` 4.5
+
+
+
+
             
